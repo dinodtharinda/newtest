@@ -1,6 +1,5 @@
 // ignore_for_file: prefer_const_constructors, use_build_context_synchronously
 
-import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -108,7 +107,7 @@ class _RegisterViewState extends State<RegisterView> {
             SizedBox(
               height: 10,
             ),
-            //sign in button
+            //Register in button
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 22),
               child: Card(
@@ -130,16 +129,9 @@ class _RegisterViewState extends State<RegisterView> {
                           });
                           await Firebase.initializeApp(
                               options: DefaultFirebaseOptions.currentPlatform);
+
+                          if (press == false) {}
                           try {
-                            Timer.periodic(
-                                Duration(seconds: 3),
-                                ((timer) => {
-                                      setState(() {
-                                        if (press == false) {
-                                          press = true;
-                                        }
-                                      })
-                                    }));
                             await FirebaseAuth.instance
                                 .createUserWithEmailAndPassword(
                                     email: email, password: password);
@@ -157,6 +149,11 @@ class _RegisterViewState extends State<RegisterView> {
                                   label: 'Dismiss',
                                   textColor: Colors.black,
                                   onPressed: () {
+                                    setState(() {
+                                      if (press == false) {
+                                        press = true;
+                                      }
+                                    });
                                     ScaffoldMessenger.of(context)
                                         .hideCurrentSnackBar();
                                   },
@@ -186,7 +183,7 @@ class _RegisterViewState extends State<RegisterView> {
                                 content: Text(errorMsg),
                                 elevation: 16,
                                 backgroundColor:
-                                    const Color.fromARGB(255, 234, 15, 15),
+                                    Color.fromARGB(159, 219, 22, 22),
                                 behavior: SnackBarBehavior.floating,
                                 margin: const EdgeInsets.all(10),
                                 shape: RoundedRectangleBorder(
@@ -196,8 +193,17 @@ class _RegisterViewState extends State<RegisterView> {
                                   label: 'Dismiss',
                                   textColor: Colors.black,
                                   onPressed: () {
-                                    ScaffoldMessenger.of(context)
-                                        .hideCurrentSnackBar();
+                                    try {
+                                      setState(() {
+                                        if (press == false) {
+                                          press = true;
+                                        }
+                                      });
+                                      ScaffoldMessenger.of(context)
+                                          .hideCurrentSnackBar();
+                                    } catch (e) {
+                                      print(e);
+                                    }
                                   },
                                 ));
                             ScaffoldMessenger.of(context)
@@ -207,7 +213,7 @@ class _RegisterViewState extends State<RegisterView> {
                                 content: Text(e.toString()),
                                 elevation: 16,
                                 backgroundColor:
-                                    const Color.fromARGB(255, 234, 15, 15),
+                                    Color.fromARGB(159, 219, 22, 22),
                                 behavior: SnackBarBehavior.floating,
                                 margin: const EdgeInsets.all(10),
                                 shape: RoundedRectangleBorder(
@@ -217,6 +223,11 @@ class _RegisterViewState extends State<RegisterView> {
                                   label: 'Dismiss',
                                   textColor: Colors.black,
                                   onPressed: () {
+                                    setState(() {
+                                      if (press == false) {
+                                        press = true;
+                                      }
+                                    });
                                     ScaffoldMessenger.of(context)
                                         .hideCurrentSnackBar();
                                   },

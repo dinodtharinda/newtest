@@ -5,7 +5,7 @@ import 'package:new_test/views/register_view.dart';
 void main() {
   runApp(
      MaterialApp(
-      home: RegisterView(),
+      home:const RegisterView(),
       routes: {
         '/register/' :(context) => const RegisterView(),
         '/login/':(context) =>const LoginView()

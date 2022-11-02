@@ -1,6 +1,6 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, use_build_context_synchronously
 
-import 'dart:async';
+
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -129,18 +129,10 @@ class _LoginViewState extends State<LoginView> {
                               press = false;
                             }
                           });
+                          if (press == false) {}
                           await Firebase.initializeApp(
                               options: DefaultFirebaseOptions.currentPlatform);
                           try {
-                            Timer.periodic(
-                                Duration(seconds: 3),
-                                ((timer) => {
-                                      setState(() {
-                                        if (press == false) {
-                                          press = true;
-                                        }
-                                      })
-                                    }));
                             await FirebaseAuth.instance
                                 .signInWithEmailAndPassword(
                                     email: email, password: password);
@@ -195,8 +187,17 @@ class _LoginViewState extends State<LoginView> {
                                   label: 'Dismiss',
                                   textColor: Colors.black,
                                   onPressed: () {
-                                    ScaffoldMessenger.of(context)
-                                        .hideCurrentSnackBar();
+                                    try {
+                                      setState(() {
+                                        if (press == false) {
+                                          press = true;
+                                        }
+                                      });
+                                      ScaffoldMessenger.of(context)
+                                          .hideCurrentSnackBar();
+                                    } catch (e) {
+                                      print(e);
+                                    }
                                   },
                                 ));
                             ScaffoldMessenger.of(context)
