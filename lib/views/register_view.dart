@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, use_build_context_synchronously
 
+import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -120,6 +121,7 @@ class _RegisterViewState extends State<RegisterView> {
                   splashColor: Colors.black38,
                   onTap: (press)
                       ? () async {
+                          print('dome');
                           final email = _email.text;
                           final password = _password.text;
                           setState(() {
@@ -130,7 +132,13 @@ class _RegisterViewState extends State<RegisterView> {
                           await Firebase.initializeApp(
                               options: DefaultFirebaseOptions.currentPlatform);
 
-                          if (press == false) {}
+                          if (press == false) { 
+                                Timer.periodic(Duration(seconds: 2), (timer) {
+                              setState(() {
+                                press = true;
+                              });
+                            });
+                          }
                           try {
                             await FirebaseAuth.instance
                                 .createUserWithEmailAndPassword(

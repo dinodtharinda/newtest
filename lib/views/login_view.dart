@@ -1,6 +1,6 @@
 // ignore_for_file: prefer_const_constructors, use_build_context_synchronously
 
-
+import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -129,7 +129,13 @@ class _LoginViewState extends State<LoginView> {
                               press = false;
                             }
                           });
-                          if (press == false) {}
+                          if (press == false) {
+                                Timer.periodic(Duration(seconds: 2), (timer) {
+                              setState(() {
+                                press = true;
+                              });
+                            });
+                          }
                           await Firebase.initializeApp(
                               options: DefaultFirebaseOptions.currentPlatform);
                           try {
