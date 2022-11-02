@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:new_test/views/login_view.dart';
+import 'package:new_test/views/register_view.dart';
 
 void main() {
   runApp(
-    const MaterialApp(
-      home: LoginView(),
+     MaterialApp(
+      home: RegisterView(),
+      routes: {
+        '/register/' :(context) => const RegisterView(),
+        '/login/':(context) =>const LoginView()
+      },
     ),
   );
 }
