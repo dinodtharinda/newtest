@@ -146,7 +146,7 @@ class _LoginViewState extends State<LoginView> {
                                 content: Text("Logged In!"),
                                 elevation: 16,
                                 backgroundColor:
-                                    Color.fromARGB(144, 15, 234, 114),
+                                   Color.fromARGB(144, 70, 3, 184),
                                 behavior: SnackBarBehavior.floating,
                                 margin: const EdgeInsets.all(10),
                                 shape: RoundedRectangleBorder(
@@ -185,7 +185,7 @@ class _LoginViewState extends State<LoginView> {
                                 content: Text(errorMsg),
                                 elevation: 16,
                                 backgroundColor:
-                                    Color.fromARGB(138, 234, 15, 15),
+                                      Color.fromARGB(192, 171, 0, 0),
                                 behavior: SnackBarBehavior.floating,
                                 margin: const EdgeInsets.all(10),
                                 shape: RoundedRectangleBorder(
@@ -208,21 +208,22 @@ class _LoginViewState extends State<LoginView> {
                                     }
                                   },
                                 ));
-                          Future.delayed(Duration(seconds: 3), () {
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(snackbar);
-                          });
+                            Future.delayed(Duration(seconds: 3), () {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(snackbar);
+                            });
                           } catch (e) {
                             var snackbar = SnackBar(
                                 content: Text(e.toString()),
                                 elevation: 16,
-                                backgroundColor:
-                                    const Color.fromARGB(255, 234, 15, 15),
                                 behavior: SnackBarBehavior.floating,
                                 margin: const EdgeInsets.all(10),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15)),
                                 duration: const Duration(seconds: 10),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                backgroundColor:
+                                    Color.fromARGB(192, 171, 0, 0),
                                 action: SnackBarAction(
                                   label: 'Dismiss',
                                   textColor: Colors.black,
@@ -231,10 +232,10 @@ class _LoginViewState extends State<LoginView> {
                                         .hideCurrentSnackBar();
                                   },
                                 ));
-                          Future.delayed(Duration(seconds: 3), () {
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(snackbar);
-                          });
+                            Future.delayed(Duration(seconds: 3), () {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(snackbar);
+                            });
                           }
                         }
                       : null,

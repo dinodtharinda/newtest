@@ -147,7 +147,7 @@ class _RegisterViewState extends State<RegisterView> {
                                 content: Text("Registered!"),
                                 elevation: 16,
                                 backgroundColor:
-                                    Color.fromARGB(255, 15, 234, 84),
+                                    Color.fromARGB(144, 70, 3, 184),
                                 behavior: SnackBarBehavior.floating,
                                 margin: const EdgeInsets.all(10),
                                 shape: RoundedRectangleBorder(
@@ -193,7 +193,7 @@ class _RegisterViewState extends State<RegisterView> {
                                 content: Text(errorMsg),
                                 elevation: 16,
                                 backgroundColor:
-                                    Color.fromARGB(159, 219, 22, 22),
+                                    Color.fromARGB(192, 171, 0, 0),
                                 behavior: SnackBarBehavior.floating,
                                 margin: const EdgeInsets.all(10),
                                 shape: RoundedRectangleBorder(
@@ -225,7 +225,7 @@ class _RegisterViewState extends State<RegisterView> {
                                 content: Text(e.toString()),
                                 elevation: 16,
                                 backgroundColor:
-                                    Color.fromARGB(159, 219, 22, 22),
+                                     Color.fromARGB(192, 171, 0, 0),
                                 behavior: SnackBarBehavior.floating,
                                 margin: const EdgeInsets.all(10),
                                 shape: RoundedRectangleBorder(

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:new_test/views/login_view.dart';
 import 'package:new_test/views/register_view.dart';
+import 'views/verify_email_view.dart';
 
 void main() {
   runApp(
      MaterialApp(
-      home:const RegisterView(),
+      home:const VerityEmailView(),
       routes: {
         '/register/' :(context) => const RegisterView(),
         '/login/':(context) =>const LoginView()
