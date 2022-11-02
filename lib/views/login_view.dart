@@ -129,13 +129,13 @@ class _LoginViewState extends State<LoginView> {
                               press = false;
                             }
                           });
-                          if (press == false) {
-                                Timer.periodic(Duration(seconds: 2), (timer) {
-                              setState(() {
+                          Future.delayed(Duration(seconds: 3), () {
+                            setState(() {
+                              if (press == false) {
                                 press = true;
-                              });
+                              }
                             });
-                          }
+                          });
                           await Firebase.initializeApp(
                               options: DefaultFirebaseOptions.currentPlatform);
                           try {
@@ -276,6 +276,12 @@ class _LoginViewState extends State<LoginView> {
                         (states) => Colors.transparent),
                   ),
                   onPressed: () {
+                    setState(() {
+                      if (press == false) {
+                        press = true;
+                      }
+                    });
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
                     Navigator.of(context).pushNamedAndRemoveUntil(
                         '/register/', (route) => false);
                   },

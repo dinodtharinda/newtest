@@ -132,13 +132,13 @@ class _RegisterViewState extends State<RegisterView> {
                           await Firebase.initializeApp(
                               options: DefaultFirebaseOptions.currentPlatform);
 
-                          if (press == false) { 
-                                Timer.periodic(Duration(seconds: 2), (timer) {
-                              setState(() {
+                          Future.delayed(Duration(seconds: 3), () {
+                            setState(() {
+                              if (press == false) {
                                 press = true;
-                              });
+                              }
                             });
-                          }
+                          });
                           try {
                             await FirebaseAuth.instance
                                 .createUserWithEmailAndPassword(
@@ -289,6 +289,11 @@ class _RegisterViewState extends State<RegisterView> {
                         (states) => Colors.transparent),
                   ),
                   onPressed: () {
+                    setState(() {
+                      if (press == false) {
+                        press = true;
+                      }
+                    });
                     ScaffoldMessenger.of(context).hideCurrentSnackBar();
                     Navigator.of(context)
                         .pushNamedAndRemoveUntil('/login/', (route) => false);
