@@ -166,8 +166,10 @@ class _RegisterViewState extends State<RegisterView> {
                                         .hideCurrentSnackBar();
                                   },
                                 ));
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(snackbar);
+                            Future.delayed(Duration(seconds: 3), () {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(snackbar);
+                            });
                           } on FirebaseAuthException catch (e) {
                             var errorMsg = e.code;
                             if (e.code == 'user-not-found') {
@@ -214,8 +216,10 @@ class _RegisterViewState extends State<RegisterView> {
                                     }
                                   },
                                 ));
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(snackbar);
+                            Future.delayed(Duration(seconds: 3), () {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(snackbar);
+                            });
                           } catch (e) {
                             var snackbar = SnackBar(
                                 content: Text(e.toString()),
@@ -240,8 +244,10 @@ class _RegisterViewState extends State<RegisterView> {
                                         .hideCurrentSnackBar();
                                   },
                                 ));
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(snackbar);
+                            Future.delayed(Duration(seconds: 3), () {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(snackbar);
+                            });
                           }
                         }
                       : null,

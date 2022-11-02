@@ -160,8 +160,10 @@ class _LoginViewState extends State<LoginView> {
                                         .hideCurrentSnackBar();
                                   },
                                 ));
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(snackbar);
+                            Future.delayed(Duration(seconds: 3), () {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(snackbar);
+                            });
                           } on FirebaseAuthException catch (e) {
                             var errorMsg = e.code;
                             if (e.code == 'user-not-found') {
@@ -206,8 +208,10 @@ class _LoginViewState extends State<LoginView> {
                                     }
                                   },
                                 ));
+                          Future.delayed(Duration(seconds: 3), () {
                             ScaffoldMessenger.of(context)
                                 .showSnackBar(snackbar);
+                          });
                           } catch (e) {
                             var snackbar = SnackBar(
                                 content: Text(e.toString()),
@@ -227,8 +231,10 @@ class _LoginViewState extends State<LoginView> {
                                         .hideCurrentSnackBar();
                                   },
                                 ));
+                          Future.delayed(Duration(seconds: 3), () {
                             ScaffoldMessenger.of(context)
                                 .showSnackBar(snackbar);
+                          });
                           }
                         }
                       : null,
