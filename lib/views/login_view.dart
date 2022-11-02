@@ -93,7 +93,7 @@ class _LoginViewState extends State<LoginView> {
                   ),
                   decoration: InputDecoration(
                     border: InputBorder.none,
-                    hintText: 'Password',
+                    hintText: 'Passwordrr',
                   ),
                 ),
               ),
