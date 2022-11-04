@@ -46,13 +46,13 @@ class _VerityEmailViewState extends State<VerityEmailView> {
                     overlayColor: MaterialStateColor.resolveWith(
                         (states) => Colors.transparent),
                   ),
-                  onPressed: () async {
+                  onPressed:press ? () async {
                     setState(() {
                       if (press == true) {
                         press = false;
                       }
                     });
-                    Future.delayed(Duration(seconds: 3), () {
+                    Future.delayed(const Duration(seconds: 3), () {
                       setState(() {
                         if (press == false) {
                           press = true;
@@ -64,11 +64,11 @@ class _VerityEmailViewState extends State<VerityEmailView> {
                     if (user != null) {
                       try {
                         await user.sendEmailVerification();
-                      } catch (e) {
+                      }on FirebaseAuthException catch (e) {
                         var snackbar = SnackBar(
-                            content: Text(e.runtimeType.toString()),
+                            content: Text(e.code),
                             elevation: 16,
-                            backgroundColor: Color.fromARGB(192, 171, 0, 0),
+                            backgroundColor: const Color.fromARGB(192, 171, 0, 0),
                             behavior: SnackBarBehavior.floating,
                             margin: const EdgeInsets.all(10),
                             shape: RoundedRectangleBorder(
@@ -82,12 +82,12 @@ class _VerityEmailViewState extends State<VerityEmailView> {
                                     .hideCurrentSnackBar();
                               },
                             ));
-                        Future.delayed(Duration(seconds: 3), () {
+                        Future.delayed(const Duration(seconds: 3), () {
                           ScaffoldMessenger.of(context).showSnackBar(snackbar);
                         });
                       }
                     }
-                  },
+                  }:null,
                   child: (press)
                       ? const Text(
                           'Send email verification',

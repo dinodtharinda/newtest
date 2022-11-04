@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, use_build_context_synchronously
+// ignore_for_file: prefer_const_constructors, use_build_context_synchronously, avoid_print
 
 import 'dart:async';
 
@@ -121,7 +121,6 @@ class _RegisterViewState extends State<RegisterView> {
                   splashColor: Colors.black38,
                   onTap: (press)
                       ? () async {
-                          print('dome');
                           final email = _email.text;
                           final password = _password.text;
                           setState(() {

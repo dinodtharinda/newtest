@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, use_build_context_synchronously
+// ignore_for_file: prefer_const_constructors, use_build_context_synchronously, avoid_print
 
 import 'dart:async';
 
@@ -35,6 +35,31 @@ class _LoginViewState extends State<LoginView> {
   }
 
   bool press = true;
+
+  SnackBar Message(
+    Color color,
+    String msg,
+  ) {
+    return SnackBar(
+        content: Text(msg),
+        elevation: 16,
+        backgroundColor: color,
+        behavior: SnackBarBehavior.floating,
+        margin: const EdgeInsets.all(10),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        duration: const Duration(seconds: 10),
+        action: SnackBarAction(
+          label: 'Dismiss',
+          textColor: Colors.black,
+          onPressed: () {
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          },
+        ));
+  }
+
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,9 +98,7 @@ class _LoginViewState extends State<LoginView> {
                   cursorColor: Colors.deepPurple,
                   cursorHeight: 20,
                   decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hintText: 'Email',
-                  ),
+                      border: InputBorder.none, hintText: 'Email'),
                 ),
               ),
             ),
@@ -142,24 +165,7 @@ class _LoginViewState extends State<LoginView> {
                             await FirebaseAuth.instance
                                 .signInWithEmailAndPassword(
                                     email: email, password: password);
-                            var snackbar = SnackBar(
-                                content: Text("Logged In!"),
-                                elevation: 16,
-                                backgroundColor:
-                                   Color.fromARGB(144, 70, 3, 184),
-                                behavior: SnackBarBehavior.floating,
-                                margin: const EdgeInsets.all(10),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15)),
-                                duration: const Duration(seconds: 10),
-                                action: SnackBarAction(
-                                  label: 'Dismiss',
-                                  textColor: Colors.black,
-                                  onPressed: () {
-                                    ScaffoldMessenger.of(context)
-                                        .hideCurrentSnackBar();
-                                  },
-                                ));
+                           SnackBar snackbar = Message(Color.fromARGB(255, 105, 244, 54), 'ereqw');
                             Future.delayed(Duration(seconds: 3), () {
                               ScaffoldMessenger.of(context)
                                   .showSnackBar(snackbar);
@@ -184,8 +190,7 @@ class _LoginViewState extends State<LoginView> {
                             var snackbar = SnackBar(
                                 content: Text(errorMsg),
                                 elevation: 16,
-                                backgroundColor:
-                                      Color.fromARGB(192, 171, 0, 0),
+                                backgroundColor: Color.fromARGB(192, 171, 0, 0),
                                 behavior: SnackBarBehavior.floating,
                                 margin: const EdgeInsets.all(10),
                                 shape: RoundedRectangleBorder(
@@ -222,8 +227,7 @@ class _LoginViewState extends State<LoginView> {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(15),
                                 ),
-                                backgroundColor:
-                                    Color.fromARGB(192, 171, 0, 0),
+                                backgroundColor: Color.fromARGB(192, 171, 0, 0),
                                 action: SnackBarAction(
                                   label: 'Dismiss',
                                   textColor: Colors.black,
