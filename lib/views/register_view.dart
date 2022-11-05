@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, use_build_context_synchronously, avoid_print
+// ignore_for_file: prefer_const_constructors, use_build_context_synchronously, avoid_print, non_constant_identifier_names
 
 import 'dart:async';
 
@@ -29,11 +29,188 @@ class _RegisterViewState extends State<RegisterView> {
   void dispose() {
     _password.dispose();
     _email.dispose();
-
     super.dispose();
   }
 
-  bool press = true;
+  bool unPress = true;
+// SnackBar widget (Error msg snack and Succes msg snack)
+  SnackBar message(Color color, String msg) {
+    return SnackBar(
+      content: Text(msg),
+      elevation: 16,
+      backgroundColor: color,
+      behavior: SnackBarBehavior.floating,
+      margin: const EdgeInsets.all(10),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      duration: const Duration(seconds: 10),
+      action: SnackBarAction(
+        label: 'Dismiss',
+        textColor: Colors.black,
+        onPressed: () {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        },
+      ),
+    );
+  }
+
+// TextField widget (Email and Password)
+  Widget textfield(
+      String hint, TextEditingController controller, bool obscure) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 25),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        decoration: BoxDecoration(
+          color: Colors.grey[200],
+          border: Border.all(color: Colors.white),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: TextField(
+          obscureText: obscure,
+          controller: controller,
+          style: TextStyle(fontSize: 18),
+          cursorColor: Colors.deepPurple,
+          cursorHeight: 20,
+          decoration: InputDecoration(border: InputBorder.none, hintText: hint),
+        ),
+      ),
+    );
+  }
+
+// Error Message of SnackBar method
+  String errorMsg(FirebaseAuthException e) {
+    var errorMsg = e.code;
+    if (e.code == 'user-not-found') {
+      errorMsg = 'User not found!';
+    } else if (e.code == 'unknown') {
+      errorMsg = 'Please enter Email and Password!';
+    } else if (e.code == 'email-already-in-use') {
+      errorMsg = 'This email is already in use!';
+    } else if (e.code == 'invalid-email') {
+      errorMsg = 'Invalid Email!';
+    } else if (e.code == 'weak-password') {
+      errorMsg = 'Weak password!';
+    } else if (e.code == 'too-many-requests') {
+      errorMsg = 'Please try again later!';
+    } else if (e.code == 'network-request-failed') {
+      errorMsg = 'Please Connect Network';
+    } else {
+      errorMsg = e.code;
+    }
+    return errorMsg;
+  }
+
+//User Registation Login
+  void register() async {
+    final email = _email.text;
+    final password = _password.text;
+    loading(); //Button unPress Method call
+    await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform);
+    await FirebaseAuth.instance
+        .createUserWithEmailAndPassword(email: email, password: password);
+    Future.delayed(Duration(seconds: 3), () {
+      loading(); //Button unPress Method call
+    });
+    try {
+      SnackBar snackbar = message(
+          Color.fromARGB(255, 105, 244, 54), 'Success!'); //snackBar widget call
+      Future.delayed(Duration(seconds: 3), () {
+        ScaffoldMessenger.of(context).showSnackBar(snackbar);
+      });
+    } on FirebaseAuthException catch (e) {
+      SnackBar snackbar = message(
+          Color.fromARGB(255, 244, 54, 54), errorMsg(e)); //snackBar widget call
+      Future.delayed(Duration(seconds: 3), () {
+        ScaffoldMessenger.of(context).showSnackBar(snackbar);
+      });
+    } catch (e) {
+      SnackBar snackbar = message(Color.fromARGB(255, 244, 54, 54),
+          e.toString()); //snackBar widget call
+      Future.delayed(Duration(seconds: 3), () {
+        ScaffoldMessenger.of(context).showSnackBar(snackbar);
+      });
+    }
+  }
+
+  //Button unPress Logic
+  void loading() {
+    setState(() {
+      if (unPress == false) {
+        unPress = true;
+      } else {
+        unPress = false;
+      }
+    });
+  }
+
+//Register Button Widget
+  Widget registerBtn(String btnTitle) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 22),
+      child: Card(
+        color: Colors.deepPurple,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        elevation: 3,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(12),
+          splashColor: Colors.black38,
+          onTap: (unPress) ? register : null, //user Registation method call
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Center(
+              child: unPress
+                  ? Text(
+                      btnTitle,
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18),
+                    )
+                  : SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(
+                          color: Colors.white, strokeWidth: 3),
+                    ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+//If you already have an Account? widget
+  Widget haveAnAccount(String reson, String btnTitle) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          reson,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        TextButton(
+          style: ButtonStyle(
+              overlayColor: MaterialStateColor.resolveWith(
+                  (states) => Colors.transparent)),
+          onPressed: () {
+            loading(); //Button unPress Method call
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            Navigator.of(context)
+                .pushNamedAndRemoveUntil('/login/', (route) => false);
+          },
+          child: Text(
+            btnTitle,
+            style: TextStyle(
+                color: Colors.deepPurple, fontWeight: FontWeight.bold),
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,276 +220,33 @@ class _RegisterViewState extends State<RegisterView> {
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
             //hello again
             Text(
-              'New Test',
+              'New Test', //head
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
             ),
             SizedBox(
               height: 10,
             ),
             Text(
-              'Welcome back, you\'ve been missed!',
+              'Welcome back, you\'ve been missed!', //title
               style: TextStyle(fontSize: 20),
             ),
             SizedBox(
               height: 80,
             ),
-            //email textfield
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 25),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  border: Border.all(color: Colors.white),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: TextField(
-                  controller: _email,
-                  style: TextStyle(fontSize: 18),
-                  cursorColor: Colors.deepPurple,
-                  cursorHeight: 20,
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hintText: 'Email',
-                  ),
-                ),
-              ),
-            ),
-            //password Textfield
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 25),
-              child: Container(
-                margin: EdgeInsets.only(top: 10),
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  border: Border.all(
-                    color: Colors.white,
-                  ),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: TextField(
-                  controller: _password,
-                  cursorColor: Colors.deepPurple,
-                  cursorHeight: 20,
-                  style: TextStyle(
-                    fontSize: 18,
-                  ),
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hintText: 'Password',
-                  ),
-                ),
-              ),
-            ),
+            textfield('Email', _email, false), //Email TextField
             SizedBox(
               height: 10,
             ),
-            //Register in button
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 22),
-              child: Card(
-                color: Colors.deepPurple,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
-                elevation: 3,
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(12),
-                  splashColor: Colors.black38,
-                  onTap: (press)
-                      ? () async {
-                          final email = _email.text;
-                          final password = _password.text;
-                          setState(() {
-                            if (press) {
-                              press = false;
-                            }
-                          });
-                          await Firebase.initializeApp(
-                              options: DefaultFirebaseOptions.currentPlatform);
-
-                          Future.delayed(Duration(seconds: 3), () {
-                            setState(() {
-                              if (press == false) {
-                                press = true;
-                              }
-                            });
-                          });
-                          try {
-                            await FirebaseAuth.instance
-                                .createUserWithEmailAndPassword(
-                                    email: email, password: password);
-                            var snackbar = SnackBar(
-                                content: Text("Registered!"),
-                                elevation: 16,
-                                backgroundColor:
-                                    Color.fromARGB(144, 70, 3, 184),
-                                behavior: SnackBarBehavior.floating,
-                                margin: const EdgeInsets.all(10),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15)),
-                                duration: const Duration(seconds: 10),
-                                action: SnackBarAction(
-                                  label: 'Dismiss',
-                                  textColor: Colors.black,
-                                  onPressed: () {
-                                    setState(() {
-                                      if (press == false) {
-                                        press = true;
-                                      }
-                                    });
-                                    ScaffoldMessenger.of(context)
-                                        .hideCurrentSnackBar();
-                                  },
-                                ));
-                            Future.delayed(Duration(seconds: 3), () {
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(snackbar);
-                            });
-                          } on FirebaseAuthException catch (e) {
-                            var errorMsg = e.code;
-                            if (e.code == 'user-not-found') {
-                              errorMsg = 'User not found!';
-                            } else if (e.code == 'unknown') {
-                              errorMsg = 'Please enter Email and Password!';
-                            } else if (e.code == 'email-already-in-use') {
-                              errorMsg = 'This email is already in use!';
-                            } else if (e.code == 'invalid-email') {
-                              errorMsg = 'Invalid Email!';
-                            } else if (e.code == 'weak-password') {
-                              errorMsg = 'Weak password!';
-                            } else if (e.code == 'too-many-requests') {
-                              errorMsg = 'Please try again later!';
-                            } else if (e.code == 'network-request-failed') {
-                              errorMsg = 'Please Connect Network';
-                            } else {
-                              errorMsg = e.code;
-                            }
-                            var snackbar = SnackBar(
-                                content: Text(errorMsg),
-                                elevation: 16,
-                                backgroundColor:
-                                    Color.fromARGB(192, 171, 0, 0),
-                                behavior: SnackBarBehavior.floating,
-                                margin: const EdgeInsets.all(10),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15)),
-                                duration: const Duration(seconds: 10),
-                                action: SnackBarAction(
-                                  label: 'Dismiss',
-                                  textColor: Colors.black,
-                                  onPressed: () {
-                                    try {
-                                      setState(() {
-                                        if (press == false) {
-                                          press = true;
-                                        }
-                                      });
-                                      ScaffoldMessenger.of(context)
-                                          .hideCurrentSnackBar();
-                                    } catch (e) {
-                                      print(e);
-                                    }
-                                  },
-                                ));
-                            Future.delayed(Duration(seconds: 3), () {
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(snackbar);
-                            });
-                          } catch (e) {
-                            var snackbar = SnackBar(
-                                content: Text(e.toString()),
-                                elevation: 16,
-                                backgroundColor:
-                                     Color.fromARGB(192, 171, 0, 0),
-                                behavior: SnackBarBehavior.floating,
-                                margin: const EdgeInsets.all(10),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15)),
-                                duration: const Duration(seconds: 10),
-                                action: SnackBarAction(
-                                  label: 'Dismiss',
-                                  textColor: Colors.black,
-                                  onPressed: () {
-                                    setState(() {
-                                      if (press == false) {
-                                        press = true;
-                                      }
-                                    });
-                                    ScaffoldMessenger.of(context)
-                                        .hideCurrentSnackBar();
-                                  },
-                                ));
-                            Future.delayed(Duration(seconds: 3), () {
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(snackbar);
-                            });
-                          }
-                        }
-                      : null,
-                  child: Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Center(
-                      child: press
-                          ? Text(
-                              'Register',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
-                              ),
-                            )
-                          : SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(
-                                color: Colors.white,
-                                strokeWidth: 3,
-                              ),
-                            ),
-                    ),
-                  ),
-                ),
-              ),
+            textfield('Password', _password, false), //Password TextField
+            SizedBox(
+              height: 10,
             ),
+            registerBtn('Register'), //Register button
             SizedBox(
               height: 25,
             ),
-            //not a member? Register Now
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'I already have an account?',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                TextButton(
-                  style: ButtonStyle(
-                    overlayColor: MaterialStateColor.resolveWith(
-                        (states) => Colors.transparent),
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      if (press == false) {
-                        press = true;
-                      }
-                    });
-                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                    Navigator.of(context)
-                        .pushNamedAndRemoveUntil('/login/', (route) => false);
-                  },
-                  child: Text(
-                    'Login here',
-                    style: TextStyle(
-                      color: Colors.deepPurple,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
-            )
+            haveAnAccount('I already have an account?',
+                'Login here'), //I already have an account?
           ]),
         ),
       ),
