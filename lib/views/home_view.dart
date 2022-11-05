@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:new_test/constants/routes.dart';
+import 'package:new_test/user_auth.dart';
 import 'dart:developer' as devtools show log;
 
 import '../firebase_options.dart';
@@ -64,11 +65,7 @@ class _HomePageState extends State<HomePage> {
                   await showMessageDialog(); //call show message dialog widgit
               devtools.log(shouldLogout.toString());
               if (shouldLogout) {
-                await Firebase.initializeApp(
-                    options: DefaultFirebaseOptions.currentPlatform);
-                await FirebaseAuth.instance.signOut();
-                Navigator.of(context)
-                    .pushNamedAndRemoveUntil(loginRoute, (route) => false);
+                logout(context);
               }
               break;
             case MenuAction.more:

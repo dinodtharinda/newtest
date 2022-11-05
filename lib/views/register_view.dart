@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../user_auth.dart';
-import '../widgets/sign_widgets.dart';
+import '../widgets/sign_view_widgets.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({Key? key}) : super(key: key);
@@ -47,17 +47,7 @@ class _RegisterViewState extends State<RegisterView> {
         child: Center(
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
             //hello again
-            const Text(
-              'New Test', //head
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            const Text(
-              'Welcome back, you\'ve been missed!', //title
-              style: TextStyle(fontSize: 20),
-            ),
+            signHeader('New Test', 'Welcome back, you\'ve been missed!'),
             const SizedBox(
               height: 80,
             ),

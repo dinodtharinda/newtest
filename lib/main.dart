@@ -12,7 +12,7 @@ import 'views/verify_email_view.dart';
 void main() {
   runApp(
     MaterialApp(
-      home: const HomePage(),
+      home: const VerityEmailView(),
       routes: {
         registerRoute: (context) => const RegisterView(),
         loginRoute: (context) => const LoginView(),

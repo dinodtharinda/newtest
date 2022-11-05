@@ -1,14 +1,18 @@
 //User Registation Login
 
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:new_test/constants/routes.dart';
-import 'package:new_test/utilities/show_error_message.dart';
+import 'package:new_test/utilities/show_dialogs.dart';
 
 import 'firebase_options.dart';
 
 // Error Message of SnackBar method
+
+const delay = 2;
 String errorMsg(FirebaseAuthException e) {
   var errorMsg = e.code;
   if (e.code == 'user-not-found') {
@@ -25,8 +29,6 @@ String errorMsg(FirebaseAuthException e) {
     errorMsg = 'Please try again later!';
   } else if (e.code == 'network-request-failed') {
     errorMsg = 'Please Connect Network';
-  } else if (e.code == 'user-not-found') {
-    errorMsg = 'User not found!';
   } else if (e.code == 'unknown') {
     errorMsg = 'Please enter Email and Password!';
   } else if (e.code == 'wrong-password') {
@@ -53,16 +55,16 @@ void register(TextEditingController _email, TextEditingController _password,
         options: DefaultFirebaseOptions.currentPlatform);
     await FirebaseAuth.instance
         .createUserWithEmailAndPassword(email: email, password: password);
-    Future.delayed(const Duration(seconds: 3), () {
+    Future.delayed(const Duration(seconds: delay), () {
       loading(); //Button unPress Method call
     });
   } on FirebaseAuthException catch (e) {
-    Future.delayed(const Duration(seconds: 3), () {
+    Future.delayed(const Duration(seconds: delay), () {
       showErrorMessage(errorMsg(e), context);
       loading();
     });
   } catch (e) {
-    Future.delayed(const Duration(seconds: 3), () {
+    Future.delayed(const Duration(seconds: delay), () {
       showErrorMessage(e.toString(), context);
       loading();
     });
@@ -71,28 +73,86 @@ void register(TextEditingController _email, TextEditingController _password,
 
 void logIn(TextEditingController _email, TextEditingController _password,
     BuildContext context, Function loading) async {
-  final email = _email.text;
-  final password = _password.text;
-  loading(); //Button unPress Method call
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   try {
+    final email = _email.text;
+    final password = _password.text;
+    loading(); //Button unPress Method call
+    sLoading(context);
+    await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform);
     await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: email, password: password);
-    Future.delayed(const Duration(seconds: 2), () {
+    Future.delayed(const Duration(seconds: delay), () {
       loading(); //Button unPress Method call
     });
-    Future.delayed(const Duration(seconds: 2), () {
-      Navigator.of(context).pushNamedAndRemoveUntil(homeRoute, (route) => false);
+    Future.delayed(const Duration(seconds: delay), () {
+      Navigator.of(context)
+          .pushNamedAndRemoveUntil(homeRoute, (route) => false);
     });
   } on FirebaseAuthException catch (e) {
-    Future.delayed(const Duration(seconds: 3), () {
+    Future.delayed(const Duration(seconds: delay), () {
+      Navigator.of(context).pop();
       showErrorMessage(errorMsg(e), context);
       loading();
     });
   } catch (e) {
-    Future.delayed(const Duration(seconds: 3), () {
+    Future.delayed(const Duration(seconds: delay), () {
+      Navigator.of(context).pop();
       showErrorMessage(e.toString(), context);
       loading();
     });
+  }
+}
+
+//Veriy Email Logic
+void verifyEmail(BuildContext context, Function loading) async {
+  try {
+    loading(); //Button unPress Method call
+    Future.delayed(const Duration(seconds: 3), () {
+      loading(); //Button unPress Method call
+    });
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      await user.sendEmailVerification();
+    }
+    showLoading(context);
+
+    await Future.delayed(const Duration(seconds: 2), () {
+      Navigator.of(context).pop();
+    });
+  } on FirebaseAuthException catch (e) {
+    showErrorMessage(e.code, context);
+  } catch (e) {
+    showErrorMessage(e.toString(), context);
+  }
+}
+
+//Veriy Email Logic
+void restart(BuildContext context) async {
+  try {
+    final user = FirebaseAuth.instance.currentUser;
+    await FirebaseAuth.instance.signOut();
+    showLoading(context);
+    await Future.delayed(const Duration(seconds: 3), () {
+      Navigator.of(context)
+          .pushNamedAndRemoveUntil(loginRoute, (route) => false);
+    });
+  } catch (e) {
+    showErrorMessage(e.toString(), context);
+  }
+}
+
+void logout(BuildContext context) async {
+  try {
+    await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform);
+    await FirebaseAuth.instance.signOut();
+    showLoading(context);
+    await Future.delayed(const Duration(seconds: 2), () {
+      Navigator.of(context)
+          .pushNamedAndRemoveUntil(loginRoute, (route) => false);
+    });
+  } catch (e) {
+    showErrorMessage(e.toString(), context);
   }
 }

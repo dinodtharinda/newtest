@@ -1,8 +1,7 @@
 // ignore_for_file: prefer_const_constructors, use_build_context_synchronously, avoid_print
 
 import 'package:flutter/material.dart';
-import 'package:new_test/constants/routes.dart';
-import 'package:new_test/widgets/sign_widgets.dart';
+import 'package:new_test/widgets/sign_view_widgets.dart';
 import '../user_auth.dart';
 
 class LoginView extends StatefulWidget {
@@ -33,8 +32,6 @@ class _LoginViewState extends State<LoginView> {
 
   bool unPress = true;
 
-// Error Message of SnackBar method
-
   //Button unPress Logic
   void loading() {
     setState(() {
@@ -46,40 +43,6 @@ class _LoginViewState extends State<LoginView> {
     });
   }
 
-  //if you Not a Member
-  Widget notMember(String reson, String btnTitle) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          reson,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        TextButton(
-          style: ButtonStyle(
-            overlayColor:
-                MaterialStateColor.resolveWith((states) => Colors.transparent),
-          ),
-          onPressed: () {
-            loading(); //Button unPress Method call
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
-            Navigator.of(context)
-                .pushNamedAndRemoveUntil(registerRoute, (route) => false);
-          },
-          child: Text(
-            btnTitle,
-            style: TextStyle(
-              color: Colors.deepPurple,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,18 +50,7 @@ class _LoginViewState extends State<LoginView> {
       body: SafeArea(
         child: Center(
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-            //hello again
-            Text(
-              'New Test', //Head
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Text(
-              'Welcome back, you\'ve been missed!',
-              style: TextStyle(fontSize: 20), //title
-            ),
+            signHeader('New Test', 'Welcome back, you\'ve been missed!'),
             SizedBox(
               height: 80,
             ),
@@ -110,7 +62,6 @@ class _LoginViewState extends State<LoginView> {
             SizedBox(
               height: 10,
             ),
-
             signBtn("Login", logIn, _email, _password, context, loading,
                 unPress), //Login button
             SizedBox(
