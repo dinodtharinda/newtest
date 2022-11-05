@@ -89,24 +89,25 @@ class _LoginViewState extends State<LoginView> {
     try {
       await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
-      Future.delayed(Duration(seconds: 3), () {
+      Future.delayed(Duration(seconds: 2), () {
         loading(); //Button unPress Method call
       });
-      SnackBar snackbar = message(
-          Color.fromARGB(255, 105, 244, 54), 'Success!'); //snackBar widget call
-      Future.delayed(Duration(seconds: 3), () {
-        ScaffoldMessenger.of(context).showSnackBar(snackbar);
+      Future.delayed(Duration(seconds: 2), () {
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil('/home/', (route) => false);
       });
     } on FirebaseAuthException catch (e) {
       SnackBar snackbar = message(
           Color.fromARGB(255, 244, 54, 54), errorMsg(e)); //snackBar widget call
       Future.delayed(Duration(seconds: 3), () {
+        loading();
         ScaffoldMessenger.of(context).showSnackBar(snackbar);
       });
     } catch (e) {
       SnackBar snackbar = message(Color.fromARGB(255, 244, 54, 54),
           e.toString()); //snackBar widget call
       Future.delayed(Duration(seconds: 3), () {
+        loading();
         ScaffoldMessenger.of(context).showSnackBar(snackbar);
       });
     }
