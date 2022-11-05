@@ -1,6 +1,9 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:new_test/constants/routes.dart';
 import 'dart:developer' as devtools show log;
 
 import '../firebase_options.dart';
@@ -43,6 +46,7 @@ class _HomePageState extends State<HomePage> {
           );
         }).then((value) => value ?? false);
   }
+
 //Popup Menu Button
   Widget popUpMenu() {
     return PopupMenuButton<MenuAction>(
@@ -56,14 +60,15 @@ class _HomePageState extends State<HomePage> {
         onSelected: (value) async {
           switch (value) {
             case MenuAction.logout:
-              final shouldLogout = await showMessageDialog(); //call show message dialog widgit
+              final shouldLogout =
+                  await showMessageDialog(); //call show message dialog widgit
               devtools.log(shouldLogout.toString());
               if (shouldLogout) {
                 await Firebase.initializeApp(
                     options: DefaultFirebaseOptions.currentPlatform);
                 await FirebaseAuth.instance.signOut();
                 Navigator.of(context)
-                    .pushNamedAndRemoveUntil('/login/', (route) => false);
+                    .pushNamedAndRemoveUntil(loginRoute, (route) => false);
               }
               break;
             case MenuAction.more:
@@ -83,25 +88,26 @@ class _HomePageState extends State<HomePage> {
           ];
         });
   }
+
 // AppBar
-AppBar appbar(){
+  AppBar appbar() {
     return AppBar(
-        title: const Text(
-          'HOME',
-          style: TextStyle(color: Colors.black),
-        ),
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        actions: [
-          popUpMenu(),//cal PopUpMenu
-        ],
-      );
+      title: const Text(
+        'HOME',
+        style: TextStyle(color: Colors.black),
+      ),
+      elevation: 0,
+      backgroundColor: Colors.transparent,
+      actions: [
+        popUpMenu(), //call PopUpMenu
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appbar(),//call App widgit
+      appBar: appbar(), //call App widgit
       body: const Center(
         child: Text('Home'),
       ),

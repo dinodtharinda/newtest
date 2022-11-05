@@ -1,12 +1,9 @@
 // ignore_for_file: prefer_const_constructors, use_build_context_synchronously, avoid_print
 
-import 'dart:async';
-
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-
-import '../firebase_options.dart';
+import 'package:new_test/constants/routes.dart';
+import 'package:new_test/widgets/sign_widgets.dart';
+import '../user_auth.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -36,142 +33,7 @@ class _LoginViewState extends State<LoginView> {
 
   bool unPress = true;
 
-  SnackBar message(
-    Color color,
-    String msg,
-  ) {
-    return SnackBar(
-        content: Text(msg),
-        elevation: 16,
-        backgroundColor: color,
-        behavior: SnackBarBehavior.floating,
-        margin: const EdgeInsets.all(10),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-        duration: const Duration(seconds: 10),
-        action: SnackBarAction(
-          label: 'Dismiss',
-          textColor: Colors.black,
-          onPressed: () {
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          },
-        ));
-  }
-
-  Widget textfield(
-      String hint, TextEditingController controller, bool obscure) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 25),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        decoration: BoxDecoration(
-          color: Colors.grey[200],
-          border: Border.all(color: Colors.white),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: TextField(
-          obscureText: obscure,
-          controller: controller,
-          style: TextStyle(fontSize: 18),
-          cursorColor: Colors.deepPurple,
-          cursorHeight: 20,
-          decoration: InputDecoration(border: InputBorder.none, hintText: hint),
-        ),
-      ),
-    );
-  }
-
-  void logIn() async {
-    final email = _email.text;
-    final password = _password.text;
-    loading(); //Button unPress Method call
-    await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform);
-    try {
-      await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: email, password: password);
-      Future.delayed(Duration(seconds: 2), () {
-        loading(); //Button unPress Method call
-      });
-      Future.delayed(Duration(seconds: 2), () {
-        Navigator.of(context)
-            .pushNamedAndRemoveUntil('/home/', (route) => false);
-      });
-    } on FirebaseAuthException catch (e) {
-      SnackBar snackbar = message(
-          Color.fromARGB(255, 244, 54, 54), errorMsg(e)); //snackBar widget call
-      Future.delayed(Duration(seconds: 3), () {
-        loading();
-        ScaffoldMessenger.of(context).showSnackBar(snackbar);
-      });
-    } catch (e) {
-      SnackBar snackbar = message(Color.fromARGB(255, 244, 54, 54),
-          e.toString()); //snackBar widget call
-      Future.delayed(Duration(seconds: 3), () {
-        loading();
-        ScaffoldMessenger.of(context).showSnackBar(snackbar);
-      });
-    }
-  }
-
 // Error Message of SnackBar method
-  String errorMsg(FirebaseAuthException e) {
-    var errorMsg = e.code;
-    if (e.code == 'user-not-found') {
-      errorMsg = 'User not found!';
-    } else if (e.code == 'unknown') {
-      errorMsg = 'Please enter Email and Password!';
-    } else if (e.code == 'wrong-password') {
-      errorMsg = 'Wrong password!';
-    } else if (e.code == 'invalid-email') {
-      errorMsg = 'Invalid Email!';
-    } else if (e.code == 'too-many-requests') {
-      errorMsg = 'Please try again later!';
-    } else if (e.code == 'network-request-failed') {
-      errorMsg = 'Please Connect Network';
-    } else {
-      errorMsg = e.code;
-    }
-    return errorMsg;
-  }
-
-//Login Button Widget
-  Widget loginBtn(String btnTitle) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 22),
-      child: Card(
-        color: Colors.deepPurple,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        elevation: 3,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(12),
-          splashColor: Colors.black38,
-          onTap: (unPress) ? logIn : null,
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Center(
-              child: unPress
-                  ? Text(
-                      btnTitle,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      ),
-                    )
-                  : SizedBox(
-                      height: 20,
-                      width: 20,
-                      child: CircularProgressIndicator(
-                        color: Colors.white,
-                        strokeWidth: 3,
-                      ),
-                    ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 
   //Button unPress Logic
   void loading() {
@@ -204,7 +66,7 @@ class _LoginViewState extends State<LoginView> {
             loading(); //Button unPress Method call
             ScaffoldMessenger.of(context).hideCurrentSnackBar();
             Navigator.of(context)
-                .pushNamedAndRemoveUntil('/register/', (route) => false);
+                .pushNamedAndRemoveUntil(registerRoute, (route) => false);
           },
           child: Text(
             btnTitle,
@@ -249,12 +111,13 @@ class _LoginViewState extends State<LoginView> {
               height: 10,
             ),
 
-            loginBtn('Login'), //LogIn button
+            signBtn("Login", logIn, _email, _password, context, loading,
+                unPress), //Login button
             SizedBox(
               height: 25,
             ),
-            notMember(
-                'Not a Member?', 'Register Now'), //not a member? Register Now
+            accountOption('Not a Member?', 'Register Now', context,
+                loading), //not a member? Register Now
           ]),
         ),
       ),

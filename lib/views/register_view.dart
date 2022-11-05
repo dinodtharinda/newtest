@@ -1,11 +1,6 @@
-// ignore_for_file: prefer_const_constructors, use_build_context_synchronously, avoid_print, non_constant_identifier_names
-
-import 'dart:async';
-
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:new_test/firebase_options.dart';
+import '../user_auth.dart';
+import '../widgets/sign_widgets.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({Key? key}) : super(key: key);
@@ -33,106 +28,6 @@ class _RegisterViewState extends State<RegisterView> {
   }
 
   bool unPress = true;
-// SnackBar widget (Error msg snack and Succes msg snack)
-  SnackBar message(Color color, String msg) {
-    return SnackBar(
-      content: Text(msg),
-      elevation: 16,
-      backgroundColor: color,
-      behavior: SnackBarBehavior.floating,
-      margin: const EdgeInsets.all(10),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      duration: const Duration(seconds: 10),
-      action: SnackBarAction(
-        label: 'Dismiss',
-        textColor: Colors.black,
-        onPressed: () {
-          ScaffoldMessenger.of(context).hideCurrentSnackBar();
-        },
-      ),
-    );
-  }
-
-// TextField widget (Email and Password)
-  Widget textfield(
-      String hint, TextEditingController controller, bool obscure) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 25),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        decoration: BoxDecoration(
-          color: Colors.grey[200],
-          border: Border.all(color: Colors.white),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: TextField(
-          obscureText: obscure,
-          controller: controller,
-          style: TextStyle(fontSize: 18),
-          cursorColor: Colors.deepPurple,
-          cursorHeight: 20,
-          decoration: InputDecoration(border: InputBorder.none, hintText: hint),
-        ),
-      ),
-    );
-  }
-
-// Error Message of SnackBar method
-  String errorMsg(FirebaseAuthException e) {
-    var errorMsg = e.code;
-    if (e.code == 'user-not-found') {
-      errorMsg = 'User not found!';
-    } else if (e.code == 'unknown') {
-      errorMsg = 'Please enter Email and Password!';
-    } else if (e.code == 'email-already-in-use') {
-      errorMsg = 'This email is already in use!';
-    } else if (e.code == 'invalid-email') {
-      errorMsg = 'Invalid Email!';
-    } else if (e.code == 'weak-password') {
-      errorMsg = 'Weak password!';
-    } else if (e.code == 'too-many-requests') {
-      errorMsg = 'Please try again later!';
-    } else if (e.code == 'network-request-failed') {
-      errorMsg = 'Please Connect Network';
-    } else {
-      errorMsg = e.code;
-    }
-    return errorMsg;
-  }
-
-//User Registation Login
-  void register() async {
-    final email = _email.text;
-    final password = _password.text;
-    loading(); //Button unPress Method call
-    await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform);
-    await FirebaseAuth.instance
-        .createUserWithEmailAndPassword(email: email, password: password);
-    Future.delayed(Duration(seconds: 3), () {
-      loading(); //Button unPress Method call
-    });
-    try {
-      SnackBar snackbar = message(
-          Color.fromARGB(255, 105, 244, 54), 'Success!'); //snackBar widget call
-      Future.delayed(Duration(seconds: 3), () {
-        ScaffoldMessenger.of(context).showSnackBar(snackbar);
-      });
-    } on FirebaseAuthException catch (e) {
-      SnackBar snackbar = message(
-          Color.fromARGB(255, 244, 54, 54), errorMsg(e)); //snackBar widget call
-      Future.delayed(Duration(seconds: 3), () {
-        ScaffoldMessenger.of(context).showSnackBar(snackbar);
-      });
-    } catch (e) {
-      SnackBar snackbar = message(Color.fromARGB(255, 244, 54, 54),
-          e.toString()); //snackBar widget call
-      Future.delayed(Duration(seconds: 3), () {
-        ScaffoldMessenger.of(context).showSnackBar(snackbar);
-      });
-    }
-  }
-
   //Button unPress Logic
   void loading() {
     setState(() {
@@ -144,73 +39,6 @@ class _RegisterViewState extends State<RegisterView> {
     });
   }
 
-//Register Button Widget
-  Widget registerBtn(String btnTitle) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 22),
-      child: Card(
-        color: Colors.deepPurple,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        elevation: 3,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(12),
-          splashColor: Colors.black38,
-          onTap: (unPress) ? register : null, //user Registation method call
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Center(
-              child: unPress
-                  ? Text(
-                      btnTitle,
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18),
-                    )
-                  : SizedBox(
-                      height: 20,
-                      width: 20,
-                      child: CircularProgressIndicator(
-                          color: Colors.white, strokeWidth: 3),
-                    ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-//If you already have an Account? widget
-  Widget haveAnAccount(String reson, String btnTitle) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          reson,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        TextButton(
-          style: ButtonStyle(
-              overlayColor: MaterialStateColor.resolveWith(
-                  (states) => Colors.transparent)),
-          onPressed: () {
-            loading(); //Button unPress Method call
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
-            Navigator.of(context)
-                .pushNamedAndRemoveUntil('/login/', (route) => false);
-          },
-          child: Text(
-            btnTitle,
-            style: TextStyle(
-                color: Colors.deepPurple, fontWeight: FontWeight.bold),
-          ),
-        ),
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -219,34 +47,35 @@ class _RegisterViewState extends State<RegisterView> {
         child: Center(
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
             //hello again
-            Text(
+            const Text(
               'New Test', //head
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
-            Text(
+            const Text(
               'Welcome back, you\'ve been missed!', //title
               style: TextStyle(fontSize: 20),
             ),
-            SizedBox(
+            const SizedBox(
               height: 80,
             ),
             textfield('Email', _email, false), //Email TextField
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             textfield('Password', _password, false), //Password TextField
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
-            registerBtn('Register'), //Register button
-            SizedBox(
+            signBtn("Register", register, _email, _password, context, loading,
+                unPress), //Register button
+            const SizedBox(
               height: 25,
             ),
-            haveAnAccount('I already have an account?',
-                'Login here'), //I already have an account?
+            accountOption('I already have an account?', 'Login here', context,
+                loading), //I already have an account?
           ]),
         ),
       ),
