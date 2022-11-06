@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../user_auth.dart';
+import '../firebase/user_auth.dart';
 import '../widgets/sign_view_widgets.dart';
 
 class RegisterView extends StatefulWidget {
@@ -46,8 +46,8 @@ class _RegisterViewState extends State<RegisterView> {
       body: SafeArea(
         child: Center(
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-            //hello again
-            signHeader('New Test', 'Welcome back, you\'ve been missed!'),
+            signHeader(
+                'New Test', 'Welcome back, you\'ve been missed!'), //hello again
             const SizedBox(
               height: 80,
             ),
@@ -59,8 +59,12 @@ class _RegisterViewState extends State<RegisterView> {
             const SizedBox(
               height: 10,
             ),
-            signBtn("Register", register, _email, _password, context, loading,
-                unPress), //Register button
+            signBtn(
+              "Register",
+              () => register(
+                  _email, _password, context, loading), //Register button
+              unPress,
+            ),
             const SizedBox(
               height: 25,
             ),

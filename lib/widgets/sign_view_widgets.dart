@@ -6,11 +6,7 @@ import 'package:new_test/constants/routes.dart';
 
 Widget signBtn(
   String btnTitle,
-  Function sign,
-  TextEditingController _email,
-  TextEditingController _password,
-  BuildContext context,
-  Function loading,
+  Function sign, 
   bool unPress,
 ) {
   return Padding(
@@ -22,8 +18,11 @@ Widget signBtn(
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
         splashColor: Colors.black38,
-        onTap:
-            (unPress) ? () => sign(_email, _password, context, loading) : null,
+        onTap: (unPress)
+            ? () {
+                sign();
+              }
+            : null,
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: Center(

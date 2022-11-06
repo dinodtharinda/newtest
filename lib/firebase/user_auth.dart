@@ -1,6 +1,6 @@
 //User Registation Login
 
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, no_leading_underscores_for_local_identifiers
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -8,7 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:new_test/constants/routes.dart';
 import 'package:new_test/utilities/show_dialogs.dart';
 
-import 'firebase_options.dart';
+import '../firebase_options.dart';
 
 // Error Message of SnackBar method
 
@@ -55,6 +55,11 @@ void register(TextEditingController _email, TextEditingController _password,
         options: DefaultFirebaseOptions.currentPlatform);
     await FirebaseAuth.instance
         .createUserWithEmailAndPassword(email: email, password: password);
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      await user.sendEmailVerification();
+    }
+    Navigator.of(context).pushNamed(verifyEmailRoute);
     Future.delayed(const Duration(seconds: delay), () {
       loading(); //Button unPress Method call
     });
@@ -82,12 +87,18 @@ void logIn(TextEditingController _email, TextEditingController _password,
         options: DefaultFirebaseOptions.currentPlatform);
     await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: email, password: password);
+    final user = FirebaseAuth.instance.currentUser;
     Future.delayed(const Duration(seconds: delay), () {
       loading(); //Button unPress Method call
     });
     Future.delayed(const Duration(seconds: delay), () {
-      Navigator.of(context)
-          .pushNamedAndRemoveUntil(homeRoute, (route) => false);
+      if (user?.emailVerified ?? false) {
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil(homeRoute, (route) => false);
+      } else {
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil(verifyEmailRoute, (route) => false);
+      }
     });
   } on FirebaseAuthException catch (e) {
     Future.delayed(const Duration(seconds: delay), () {
@@ -127,10 +138,9 @@ void verifyEmail(BuildContext context, Function loading) async {
   }
 }
 
-//Veriy Email Logic
+//Restart
 void restart(BuildContext context) async {
   try {
-    final user = FirebaseAuth.instance.currentUser;
     await FirebaseAuth.instance.signOut();
     showLoading(context);
     await Future.delayed(const Duration(seconds: 3), () {
@@ -142,6 +152,7 @@ void restart(BuildContext context) async {
   }
 }
 
+//Log out
 void logout(BuildContext context) async {
   try {
     await Firebase.initializeApp(

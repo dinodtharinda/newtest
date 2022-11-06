@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:new_test/widgets/sign_view_widgets.dart';
-import '../user_auth.dart';
+import '../firebase/user_auth.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -62,8 +62,12 @@ class _LoginViewState extends State<LoginView> {
             SizedBox(
               height: 10,
             ),
-            signBtn("Login", logIn, _email, _password, context, loading,
-                unPress), //Login button
+            signBtn(
+              "Login",
+              () => logIn(_email, _password, context, loading),
+              unPress,
+            ), //Login button
+
             SizedBox(
               height: 25,
             ),

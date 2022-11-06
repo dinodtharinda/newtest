@@ -1,10 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:new_test/firebase_options.dart';
 
-import '../user_auth.dart';
-import '../utilities/show_dialogs.dart';
+import '../firebase/user_auth.dart';
 import '../widgets/sign_view_widgets.dart';
 
 class VerityEmailView extends StatefulWidget {

@@ -1,13 +1,8 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:new_test/constants/routes.dart';
-import 'package:new_test/user_auth.dart';
+import 'package:new_test/firebase/user_auth.dart';
 import 'dart:developer' as devtools show log;
-
-import '../firebase_options.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
