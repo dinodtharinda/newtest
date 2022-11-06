@@ -51,6 +51,7 @@ void register(TextEditingController _email, TextEditingController _password,
     final email = _email.text;
     final password = _password.text;
     loading(); //Button unPress Method call
+    sLoading(context);
     await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform);
     await FirebaseAuth.instance
@@ -65,11 +66,13 @@ void register(TextEditingController _email, TextEditingController _password,
     });
   } on FirebaseAuthException catch (e) {
     Future.delayed(const Duration(seconds: delay), () {
+      Navigator.of(context).pop();
       showErrorMessage(errorMsg(e), context);
       loading();
     });
   } catch (e) {
     Future.delayed(const Duration(seconds: delay), () {
+      Navigator.of(context).pop();
       showErrorMessage(e.toString(), context);
       loading();
     });

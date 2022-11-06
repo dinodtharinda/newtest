@@ -39,6 +39,7 @@ class _RegisterViewState extends State<RegisterView> {
     });
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,19 +52,25 @@ class _RegisterViewState extends State<RegisterView> {
             const SizedBox(
               height: 80,
             ),
-            textfield('Email', _email, false), //Email TextField
+            textfield('Email', _email, false,), //Email TextField
             const SizedBox(
               height: 10,
             ),
-            textfield('Password', _password, false), //Password TextField
+            textfield(
+                'Password', _password, false, ), //Password TextField
             const SizedBox(
               height: 10,
             ),
             signBtn(
               "Register",
               () => register(
-                  _email, _password, context, loading), //Register button
+                _email,
+                _password,
+                context,
+                loading,
+              ), //Register button
               unPress,
+             
             ),
             const SizedBox(
               height: 25,

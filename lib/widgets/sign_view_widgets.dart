@@ -4,11 +4,7 @@
 import 'package:flutter/material.dart';
 import 'package:new_test/constants/routes.dart';
 
-Widget signBtn(
-  String btnTitle,
-  Function sign, 
-  bool unPress,
-) {
+Widget signBtn(String btnTitle, Function sign, bool unPress) {
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 22),
     child: Card(
@@ -18,7 +14,7 @@ Widget signBtn(
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
         splashColor: Colors.black38,
-        onTap: (unPress)
+        onTap: (unPress )
             ? () {
                 sign();
               }
@@ -50,7 +46,8 @@ Widget signBtn(
   );
 }
 
-Widget textfield(String hint, TextEditingController controller, bool obscure) {
+Widget textfield(String hint, TextEditingController controller, bool obscure,
+ ) {
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 25),
     child: Container(
@@ -67,6 +64,7 @@ Widget textfield(String hint, TextEditingController controller, bool obscure) {
         cursorColor: Colors.deepPurple,
         cursorHeight: 20,
         decoration: InputDecoration(border: InputBorder.none, hintText: hint),
+       
       ),
     ),
   );
